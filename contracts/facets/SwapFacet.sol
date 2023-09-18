@@ -24,11 +24,11 @@ contract SwapFacet {
         require(router != address(0), "unsupported protocolType");
 
         address[] memory paths = abi.decode(_payload, (address[]));
-        require(paths.length > 1, "DFM: Length of paths > 1");
+        require(paths.length > 1, "Length of paths > 1");
 
         address tokenOut = paths[paths.length - 1];
-        require(paths[0] != address(0) && tokenOut != address(0), "DFM: Native token swap is invalid");
-        require(mainStorage.tokenBalances[paths[0]][recipient] >= amountIn, "DFM: Insufficient balance");
+        require(paths[0] != address(0) && tokenOut != address(0), "Native token swap is invalid");
+        require(mainStorage.tokenBalances[paths[0]][recipient] >= amountIn, "Insufficient balance");
         mainStorage.tokenBalances[paths[0]][recipient] -= amountIn;
 
         IERC20(paths[0]).safeIncreaseAllowance(router, amountIn);
@@ -90,7 +90,7 @@ contract SwapFacet {
     function _extractV3PathFromPayload(bytes calldata payload) internal pure returns (bytes memory data) {
         (address[] memory paths, uint24[] memory poolFees) = abi.decode(payload, (address[], uint24[]));
         uint256 j = 0;
-        require(poolFees.length == paths.length - 1, "DFM: Length of poolFees == length of paths - 1");
+        require(poolFees.length == paths.length - 1, "Length of poolFees == length of paths - 1");
         for (uint256 i = 0; i < paths.length; i++) {
             data = abi.encodePacked(data, paths[i]);
             if (j <= poolFees.length - 1) {

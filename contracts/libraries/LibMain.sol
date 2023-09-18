@@ -11,6 +11,7 @@ library LibMain {
 
     uint16 public constant UNISWAP_V3 = 0;
     uint16 public constant PANCKASWAP_V3 = 1;
+    uint16 public constant STARGATE = 10;
 
     function mainStorage() internal pure returns (MainStorage storage ds) {
         bytes32 position = MAIN_STORAGE_POSITION;
