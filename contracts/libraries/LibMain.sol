@@ -6,8 +6,11 @@ library LibMain {
 
     struct MainStorage {
         mapping(address tokenAddress => mapping(address userAddress => uint256 tokenBalance)) tokenBalances;
-        mapping(uint16 protocolType => address routerAddress) router;
+        mapping(uint16 protocolType => address routerAddress) routers;
     }
+
+    uint16 public constant UNISWAP_V3 = 0;
+    uint16 public constant PANCKASWAP_V3 = 1;
 
     function mainStorage() internal pure returns (MainStorage storage ds) {
         bytes32 position = MAIN_STORAGE_POSITION;
