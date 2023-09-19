@@ -2,6 +2,6 @@
 
 ### TODOs
 
-- [ ] add deploy script
+- [x] add deploy script
 - [ ] add test script
 - [ ] update readme
