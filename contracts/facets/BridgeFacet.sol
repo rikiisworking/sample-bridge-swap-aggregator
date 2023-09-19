@@ -35,7 +35,7 @@ contract BridgeFacet is IBridgeFacet {
         LibMain.MainStorage storage mainStorage = LibMain.mainStorage();
         address router = mainStorage.routers[protocolType];
         require(router != address(0), "unsupported protocolType");
-        require(mainStorage.tokenBalances[_tokenIn][recipient] >= amountIn, "DFM: Insufficient balance");
+        require(mainStorage.tokenBalances[_tokenIn][recipient] >= amountIn, "Insufficient balance");
 
         mainStorage.tokenBalances[_tokenIn][recipient] -= amountIn;
         IERC20(_tokenIn).safeIncreaseAllowance(router, amountIn);
@@ -44,6 +44,21 @@ contract BridgeFacet is IBridgeFacet {
         } else {
             revert("unsupported protocol");
         }
+    }
+
+    function sgReceive(
+        uint16 _chainId,
+        bytes memory _srcAddress,
+        uint256 _nonce,
+        address _token,
+        uint256 amountLD,
+        bytes memory _payload
+    ) external {
+        LibMain.MainStorage storage mainStorage = LibMain.mainStorage();
+        address router = mainStorage.routers[LibMain.STARGATE];
+        require(msg.sender == router, "Not stargate router");
+        address recipient = abi.decode(_payload, (address));
+        mainStorage.tokenBalances[_token][recipient] += amountLD;
     }
 
     function _stargateBridge(
