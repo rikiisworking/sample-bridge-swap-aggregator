@@ -32,6 +32,8 @@ contract SwapFacet is ISwapFacet {
         require(mainStorage.tokenBalances[paths[0]][recipient] >= amountIn, "Insufficient balance");
         mainStorage.tokenBalances[paths[0]][recipient] -= amountIn;
 
+        uint256 beforeTokenOutBalance = IERC20(tokenOut).balanceOf(address(this));
+
         IERC20(paths[0]).safeIncreaseAllowance(router, amountIn);
         if (protocolType == LibMain.UNISWAP_V3) {
             _universalRouterSwap(router, paths[0], amountIn, amountOutMin, _payload);
@@ -40,11 +42,18 @@ contract SwapFacet is ISwapFacet {
         } else {
             revert("unsupported protocol");
         }
+        uint256 amountOut = IERC20(tokenOut).balanceOf(address(this)) - beforeTokenOutBalance;
+        mainStorage.tokenBalances[tokenOut][recipient] += amountOut;
     }
 
     function setRouterAddress(uint16 protocolType, address _routerAddress) external {
         LibMain.MainStorage storage mainStorage = LibMain.mainStorage();
         mainStorage.routers[protocolType] = _routerAddress;
+    }
+
+    function getRouterAddress(uint16 protocolType) external view returns (address) {
+        LibMain.MainStorage storage mainStorage = LibMain.mainStorage();
+        return mainStorage.routers[protocolType];
     }
 
     function _universalRouterSwap(
