@@ -50,6 +50,11 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@ethereum-waffle/mock-contract@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@ethereum-waffle/mock-contract/-/mock-contract-4.0.4.tgz#f13fea29922d87a4d2e7c4fc8fe72ea04d2c13de"
+  integrity sha512-LwEj5SIuEe9/gnrXgtqIkWbk2g15imM/qcJcxpLyAkOj981tQxXmtV4XmQMZsdedEsZ/D/rbUAOtZbgwqgUwQA==
+
 "@ethereumjs/rlp@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@ethereumjs/rlp/-/rlp-4.0.1.tgz#626fabfd9081baab3d0a3074b0c7ecaf674aaa41"

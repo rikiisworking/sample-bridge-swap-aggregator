@@ -6,8 +6,9 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {LibMain} from "../libraries/LibMain.sol";
 import {IUniversalRouter} from "../uniswap/IUniversalRouter.sol";
 import {ISmartRouter} from "../pancakeswap/ISmartRouter.sol";
+import {ISwapFacet} from "../interfaces/ISwapFacet.sol";
 
-contract SwapFacet {
+contract SwapFacet is ISwapFacet {
     using SafeERC20 for IERC20;
 
     function swap(
