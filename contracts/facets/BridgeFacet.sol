@@ -5,6 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {LibMain} from "../libraries/LibMain.sol";
 import {IStargateRouter} from "../stargate/IStargateRouter.sol";
+import {IBridgeFacet} from "../interfaces/IBridgeFacet.sol";
 
 struct StargateSwapParams {
     uint256 amount;
@@ -19,7 +20,7 @@ struct StargateSwapParams {
     address dstContractAddr;
 }
 
-contract BridgeFacet {
+contract BridgeFacet is IBridgeFacet {
     using SafeERC20 for IERC20;
 
     function bridge(
