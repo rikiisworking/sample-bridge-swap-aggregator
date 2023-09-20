@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { IMain, IERC20, IWETH, IQuoterV2 } from "../typechain-types"
+import { IMain, IERC20, IWETH, IQuoterV2, MockedStargateRouter } from "../typechain-types"
 
 
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
@@ -25,6 +25,7 @@ describe("Test", function () {
   let usdt: IERC20;
   let usdc: IERC20;
   let quoter: IQuoterV2;
+  let mockedStargateRouter: MockedStargateRouter;
 
   let user: HardhatEthersSigner;
 
@@ -50,14 +51,17 @@ describe("Test", function () {
     quoter = await ethers.getContractAt("IQuoterV2", UNIVERSAL_ROUTER_QUOTER_ADDRESS);
     await weth.connect(user).deposit({ value: ethers.parseEther("100") });
 
-  
+    const mockedStargateRouterFactory = await ethers.getContractFactory("MockedStargateRouter");
+    mockedStargateRouter = await mockedStargateRouterFactory.deploy();
+    mockedStargateRouter.waitForDeployment();
   })
 
   beforeEach(async () => {
     const address = await deployDiamond(false);
     main = await ethers.getContractAt("IMain", address);
     await main.setRouterAddress(0, "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD");
-    await main.setRouterAddress(10, "0x8731d54E9D02c286767d56ac03e8037C07e01e98");
+    await main.setRouterAddress(10, mockedStargateRouter);
+
   })
 
   it("deposit() should work as expected", async () => {
@@ -103,10 +107,20 @@ describe("Test", function () {
       console.log("swappedAmount:"+result);
       expect(result).gt(BigInt(0));
     })
+  })
+
+  it("bridge() should work as expected", async () => {
+    const bridgeAmount = ethers.parseEther("0.1");
+    const payload = abiCoder.encode(
+      ["uint16", "uint16", "uint16", "uint256", "uint256", "uint256", "address"],
+      [102, 1, 2, 200000, 0, 0, await main.getAddress()],
+    );
+    await weth.connect(user).approve(main, bridgeAmount);
+    await main.deposit(weth, bridgeAmount);
+
+    await main.bridge(10, user, weth, bridgeAmount, payload, {value: ethers.parseEther("0.025")})
 
   })
 
-  it("test", async () => {
-    console.log("testing hook")
-  })
+
 })
